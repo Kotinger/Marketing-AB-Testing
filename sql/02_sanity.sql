@@ -1,5 +1,5 @@
--- sanity = report.sanity_srm
--- ожидание: rows 588101 | user_id unique 588101 | psa 23524 (4%) | ad 564577 (96%)
+-- сколько строк и как разбились группы (с pipeline)
+-- у меня было: 588101 | psa ~4% | ad ~96%
 USE marketing_ab;
 
 SELECT COUNT(*) AS rows_n FROM clean_users;
@@ -13,9 +13,3 @@ SELECT
 FROM clean_users
 GROUP BY test_group
 ORDER BY test_group;
-
-SELECT
-  MIN(total_ads) AS ads_min,
-  ROUND(AVG(total_ads), 2) AS ads_mean,
-  MAX(total_ads) AS ads_max
-FROM clean_users;

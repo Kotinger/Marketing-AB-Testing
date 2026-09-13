@@ -1,8 +1,6 @@
--- by group = report.kpi_guardrail / n
--- ожидание:
--- psa n=23524 median 12 mean ~24.76
--- ad  n=564577 median 13 mean ~24.82
--- median одним проходом (не коррелированный подзапрос , у меня без этго виснет на 500k+)
+-- по группам: n / conversion / ads — те же цифры что в report
+-- psa ~1.79% | ad ~2.55% | median 12 vs 13
+-- median одним проходом (без коррелированных подзапросов — на 500k+ виснет)
 USE marketing_ab;
 
 WITH ranked AS (
@@ -24,6 +22,8 @@ med AS (
 SELECT
   g.test_group,
   COUNT(*) AS n,
+  SUM(g.converted) AS converted_n,
+  ROUND(100 * AVG(g.converted), 2) AS converted_pct,
   ROUND(AVG(g.total_ads), 2) AS ads_mean,
   m.ads_median
 FROM clean_users g

@@ -1,6 +1,5 @@
 -- Active: 1788868810471@@127.0.0.1@3306@marketing_ab
--- Marketing A/B | зерно: user (user_id)
--- Маршрут: sanity/SRM → converted → guardrail total_ads. 
+-- схема. одна строка = один user_id после pipeline
 CREATE DATABASE IF NOT EXISTS marketing_ab
   CHARACTER SET utf8mb4
   COLLATE utf8mb4_unicode_ci;

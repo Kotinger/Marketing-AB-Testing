@@ -1,5 +1,4 @@
--- keys: user_id уникален (1 юзер = 1 строка)
--- ожидание: dup_user_id 0 | bad_group 0
+-- дубли userid и кривые группы — должно быть 0 и 0
 USE marketing_ab;
 
 SELECT

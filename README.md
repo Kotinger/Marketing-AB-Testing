@@ -29,7 +29,7 @@ Python → MySQL → Power BI. Метрики сверены между слоя
 |------|------------|
 | **Python** | ETL, ключ `user id`, parquet, A/B + SRM |
 | **SQL (MySQL)** | схема, sanity, KPI n / conversion / total ads |
-| **Power BI** | Overview + Guardrail / day-hour |
+| **Power BI** | Overview (сплит, conversion, ads, day/hour) |
 
 **Маршрут: sanity → A/B conversion → guardrail → вердикт**
 - **sanity** — дубли userid, SRM vs 4/96
@@ -65,26 +65,19 @@ Python → MySQL → Power BI. Метрики сверены между слоя
 
 ## Дашборд
 
-Готовый отчёт: `powerbi/Marketing_AB_Dashboard.pbix`
+Готовый отчёт: [`powerbi/Marketing_AB_Dashboard.pbix`](powerbi/Marketing_AB_Dashboard.pbix)
 
-| Файл | Страница |
-|------|----------|
-| `powerbi/screenshots/01_overview.png` | Overview |
-| `powerbi/screenshots/02_guardrail.png` | Guardrail / day-hour |
+| Файл | Что |
+|------|-----|
+| `powerbi/screenshots/01_overview.png` | одна страница: сплит + conversion + ads + day/hour |
 
 ### Overview
 ![Overview](powerbi/screenshots/01_overview.png)
 
-- карточки: Users, Users PSA/Ad, Conversion PSA/Ad %, Diff pp  
-- конверсия по группам (столбцы)  
+- карточки: Users, Users PSA/Ad, Conversion PSA/Ad %, Diff pp, Ads Median/Mean
+- конверсия по группам (столбцы)
 - доля пользователей psa/ad (бублик)
-
-### Guardrail / day-hour
-![Guardrail](powerbi/screenshots/02_guardrail.png)
-
-- карточки: Ads Median / Mean по psa и ad  
-- конверсия по дню недели (psa vs ad)  
-- конверсия по часу (psa vs ad)
+- день и час — конверсия psa vs ad
 
 ---
 
@@ -94,20 +87,19 @@ Python → MySQL → Power BI. Метрики сверены между слоя
 data/marketing_AB.csv
         │
         ├─► scripts/pipeline.py    → data/processed/clean.parquet
-        ├─► scripts/report.py      → SRM + converted + total ads + вердикт
-        ├─► scripts/load_mysql.py  → MySQL marketing_ab
+        ├─► scripts/report.py      → z-test + total ads + вердикт
+        ├─► scripts/load_mysql.py  → MySQL marketing_ab.clean_users
         ├─► sql/01 … 06            → schema, sanity, keys, KPI
-        └─► powerbi/               → .pbix + screenshots
+        └─► powerbi/               → .pbix + screenshot
 ```
 
 | Файл | Назначение |
 |------|------------|
-| `scripts/pipeline.py` | load CSV, types, clean, userid, parquet |
-| `scripts/report.py` | SRM, conversion z-test, total ads, вердикт |
-| `scripts/load_mysql.py` | parquet → MySQL `clean_users` |
-| `sql/01_schema.sql` | БД `marketing_ab`, `clean_users` |
-| `sql/02`–`03` | sanity, keys |
-| `sql/04`–`06` | totals, by group, converted |
+| `scripts/pipeline.py` | load, типы, clean, SRM, parquet |
+| `scripts/report.py` | z-test converted, guardrail total ads, вердикт |
+| `scripts/load_mysql.py` | parquet → MySQL |
+| `sql/01`–`03` | схема, sanity, keys |
+| `sql/04`–`06` | totals, by group, diff |
 
 ---
 
@@ -119,10 +111,15 @@ data/marketing_AB.csv
 Users = COUNTROWS ( 'clean_users' )
 Users PSA = CALCULATE ( [Users], 'clean_users'[test_group] = "psa" )
 Users Ad = CALCULATE ( [Users], 'clean_users'[test_group] = "ad" )
+
+Share PSA % = DIVIDE ( [Users PSA], [Users] ) * 100
+Share Ad % = DIVIDE ( [Users Ad], [Users] ) * 100
+
 Conversion % = AVERAGE ( 'clean_users'[converted] ) * 100
 Conversion PSA % = CALCULATE ( [Conversion %], 'clean_users'[test_group] = "psa" )
 Conversion Ad % = CALCULATE ( [Conversion %], 'clean_users'[test_group] = "ad" )
 Diff pp = [Conversion Ad %] - [Conversion PSA %]
+
 Ads Median = MEDIAN ( 'clean_users'[total_ads] )
 Ads Mean = AVERAGE ( 'clean_users'[total_ads] )
 ```
