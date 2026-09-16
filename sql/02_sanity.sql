@@ -1,5 +1,5 @@
 -- сколько строк и как разбились группы (с pipeline)
--- у меня было: 588101 | psa ~4% | ad ~96%
+-- у меня было: 588101 | psa 4% | ad 96%
 USE marketing_ab;
 
 SELECT COUNT(*) AS rows_n FROM clean_users;

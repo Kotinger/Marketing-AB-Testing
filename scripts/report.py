@@ -44,7 +44,7 @@ def ztest(clean: pd.DataFrame) -> None:
 
 
 def guardrail_ads(clean: pd.DataFrame) -> None:
-    # total ads — сколько показов увидели
+    # total ads - сколько показов увидели
     print("--- guardrail total ads ---")
     s_c = clean.loc[clean[GROUP] == CONTROL, GUARDRAIL]
     s_t = clean.loc[clean[GROUP] == TREATMENT, GUARDRAIL]
@@ -54,13 +54,9 @@ def guardrail_ads(clean: pd.DataFrame) -> None:
 
 def verdict(diff, p_val, med_c, med_t) -> None:
     if p_val < ALPHA and diff > 0:
-        print(
-            "ВЕРДИКТ: катим ads — conversion у ad выше psa",
-            f"({diff * 100:.2f} pp, p={p_val:.4f});",
-            f"total ads median psa={med_c:.0f} / ad={med_t:.0f}",
-        )
+        print("ВЕРДИКТ: катим ads - conversion у ad выше psa", f"({diff * 100:.2f} pp, p={p_val:.4f});", f"total ads median psa={med_c:.0f} / ad={med_t:.0f}")
     elif p_val < ALPHA and diff < 0:
-        print("ВЕРДИКТ: ads хуже psa", f"({diff * 100:.2f} pp, p={p_val:.4f}) — не катим")
+        print("ВЕРДИКТ: ads хуже psa", f"({diff * 100:.2f} pp, p={p_val:.4f}) - не катим")
     else:
         print("ВЕРДИКТ: не катим без доп. данных")
 

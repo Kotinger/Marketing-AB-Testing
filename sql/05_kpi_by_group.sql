@@ -1,6 +1,6 @@
--- по группам: n / conversion / ads — те же цифры что в report
--- psa ~1.79% | ad ~2.55% | median 12 vs 13
--- median одним проходом (без коррелированных подзапросов — на 500k+ виснет)
+-- по группам: n / conversion / ads - те же цифры что в report
+-- psa 1.79% | ad 2.55% | median 12 vs 13
+-- median одним проходом (без коррелированных подзапросов - на 500k+ виснет)
 USE marketing_ab;
 
 WITH ranked AS (

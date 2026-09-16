@@ -65,7 +65,7 @@ def build_clean(df: pd.DataFrame) -> pd.DataFrame:
 
 
 def srm_check(clean: pd.DataFrame) -> None:
-    # в описании датасета majority = ads, small portion = psa → 4% / 96%
+    # в описании датасета majority = ads, small portion = psa -> 4% / 96%
     n = len(clean)
     n_c = int((clean[GROUP_COL] == CONTROL).sum())
     n_t = int((clean[GROUP_COL] == TREATMENT).sum())

@@ -1,5 +1,5 @@
 -- общая конверсия и показы по всем
--- converted ~2.52% | ads mean ~24.82
+-- converted 2.52% | ads mean 24.82
 USE marketing_ab;
 
 SELECT
